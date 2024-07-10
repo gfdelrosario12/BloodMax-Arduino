@@ -3,25 +3,35 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 
+// Constants for heart rate and temperature thresholds
+const int NORMAL_HEART_RATE_MIN = 60;
+const int NORMAL_HEART_RATE_MAX = 100;
+const float HOT_TEMPERATURE_THRESHOLD = 30.0;
+const float COLD_TEMPERATURE_THRESHOLD = 10.0;
+
+// Initialize sensors
 MAX30105 particleSensor;
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085); // 10085 for BMP180
 
+// Variables
 unsigned long lastBeat = 0;
 float beatsPerMinute;
+float lastTemperature = 0.0;
 bool measurementComplete = false;
 
 void setup() {
   Serial.begin(115200);
 
+  // Initialize MAX30105 sensor
   if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
     Serial.println("MAX30105 was not found. Please check wiring/power.");
     while (1);
   }
-
   particleSensor.setup();
   particleSensor.setPulseAmplitudeRed(0x0A);
   particleSensor.setPulseAmplitudeGreen(0);
 
+  // Initialize BMP180 sensor
   if (!bmp.begin()) {
     Serial.println("Could not find a valid BMP180 sensor, check wiring!");
     while (1);
@@ -52,10 +62,17 @@ void loop() {
       Serial.println(" bpm");
 
       // Check if heart rate is within normal range for adults (60-100 bpm)
-      if (beatsPerMinute >= 60 && beatsPerMinute <= 100) {
+      if (beatsPerMinute >= NORMAL_HEART_RATE_MIN && beatsPerMinute <= NORMAL_HEART_RATE_MAX) {
         Serial.println("Normal heart rate.");
       } else {
         Serial.println("Abnormal heart rate."); // Handle abnormal cases here
+        // Provide tips for abnormal heart rate
+        if (beatsPerMinute < NORMAL_HEART_RATE_MIN) {
+          Serial.println("Your heart rate is lower than normal. Take deep breaths and relax.");
+        } else if (beatsPerMinute > NORMAL_HEART_RATE_MAX) {
+          Serial.println("Your heart rate is higher than normal. Try to relax and calm down.");
+        }
+        // Implement additional actions as needed
       }
 
       // Read BMP180 temperature data
@@ -65,10 +82,22 @@ void loop() {
       Serial.print(temperature);
       Serial.println(" °C");
 
+      // Check temperature thresholds
+      if (temperature > HOT_TEMPERATURE_THRESHOLD) {
+        Serial.println("Temperature is too hot! Alert!");
+        Serial.println("Move to a cooler place and drink water.");
+        // Implement action for hot temperature
+      } else if (temperature < COLD_TEMPERATURE_THRESHOLD) {
+        Serial.println("Temperature is too cold! Alert!");
+        Serial.println("Keep warm and avoid exposure to cold.");
+        // Implement action for cold temperature
+      }
+
       // Display wait message after successful reading
       Serial.println("Wait for 5 seconds to do another reading.");
 
-      // Set measurement complete flag
+      // Set last temperature and measurement complete flag
+      lastTemperature = temperature;
       measurementComplete = true;
     } else {
       // Handle anomalous heart rate calculation
