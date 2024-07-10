@@ -51,12 +51,22 @@ void loop() {
       Serial.print(beatsPerMinute);
       Serial.println(" bpm");
 
+      // Check if heart rate is within normal range for adults (60-100 bpm)
+      if (beatsPerMinute >= 60 && beatsPerMinute <= 100) {
+        Serial.println("Normal heart rate.");
+      } else {
+        Serial.println("Abnormal heart rate."); // Handle abnormal cases here
+      }
+
       // Read BMP180 temperature data
       float temperature;
       bmp.getTemperature(&temperature);
       Serial.print("Temperature: ");
       Serial.print(temperature);
       Serial.println(" °C");
+
+      // Display wait message after successful reading
+      Serial.println("Wait for 5 seconds to do another reading.");
 
       // Set measurement complete flag
       measurementComplete = true;
