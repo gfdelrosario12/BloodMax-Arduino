@@ -57,20 +57,23 @@ void loop() {
     beatsPerMinute = 60 / (delta / 1000.0);
     if (beatsPerMinute < 255 && beatsPerMinute > 20) {
       // Print heart rate to serial monitor if valid
+      Serial.println("-----------------------------------------------------------------------------");
+      Serial.println("|                                Results                                    |");
+      Serial.println("-----------------------------------------------------------------------------");
       Serial.print("Heart rate: ");
       Serial.print(beatsPerMinute);
       Serial.println(" bpm");
 
       // Check if heart rate is within normal range for adults (60-100 bpm)
       if (beatsPerMinute >= NORMAL_HEART_RATE_MIN && beatsPerMinute <= NORMAL_HEART_RATE_MAX) {
-        Serial.println("Normal heart rate.");
+        Serial.println("Status: Normal heart rate.");
       } else {
-        Serial.println("Abnormal heart rate."); // Handle abnormal cases here
+        Serial.println("Status: Abnormal heart rate."); // Handle abnormal cases here
         // Provide tips for abnormal heart rate
         if (beatsPerMinute < NORMAL_HEART_RATE_MIN) {
-          Serial.println("Your heart rate is lower than normal. Take deep breaths and relax.");
+          Serial.println("Action: Your heart rate is lower than normal. Take deep breaths and relax.");
         } else if (beatsPerMinute > NORMAL_HEART_RATE_MAX) {
-          Serial.println("Your heart rate is higher than normal. Try to relax and calm down.");
+          Serial.println("Action: Your heart rate is higher than normal. Try to relax and calm down.");
         }
         // Implement additional actions as needed
       }
@@ -84,27 +87,25 @@ void loop() {
 
       // Check temperature thresholds
       if (temperature > HOT_TEMPERATURE_THRESHOLD) {
-        Serial.println("Temperature is too hot! Alert!");
-        Serial.println("Move to a cooler place and drink water.");
+        Serial.println("Status: Temperature is too hot! Alert!");
+        Serial.println("Action: Move to a cooler place and drink water.");
         // Implement action for hot temperature
       } else if (temperature < COLD_TEMPERATURE_THRESHOLD) {
-        Serial.println("Temperature is too cold! Alert!");
-        Serial.println("Keep warm and avoid exposure to cold.");
+        Serial.println("Status: Temperature is too cold! Alert!");
+        Serial.println("Action: Keep warm and avoid exposure to cold.");
         // Implement action for cold temperature
+      } else {
+        Serial.println("Status: Temperature is normal.");
       }
 
       // Display wait message after successful reading
-      Serial.println("Wait for 5 seconds to do another reading.");
+      Serial.println("Note: Wait for 5 seconds to do another reading.");
+      Serial.println("-----------------------------------------------------------------------------");
 
       // Set last temperature and measurement complete flag
       lastTemperature = temperature;
       measurementComplete = true;
-    } else {
-      // Handle anomalous heart rate calculation
-      Serial.println("Anomalous heart rate calculation detected.");
-      beatsPerMinute = 0; // Reset heart rate
-      measurementComplete = false;
-    }
+    } 
   }
 
   // If measurement is complete, pause for 5 seconds
@@ -115,3 +116,5 @@ void loop() {
     delay(1000); // Adjust delay as needed for your application
   }
 }
+
+
