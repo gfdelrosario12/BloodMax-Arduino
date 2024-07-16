@@ -68,14 +68,13 @@ void loop() {
       if (beatsPerMinute >= NORMAL_HEART_RATE_MIN && beatsPerMinute <= NORMAL_HEART_RATE_MAX) {
         Serial.println("Status: Normal heart rate.");
       } else {
-        Serial.println("Status: Abnormal heart rate."); // Handle abnormal cases here
+        Serial.println("Status: Abnormal heart rate.");
         // Provide tips for abnormal heart rate
         if (beatsPerMinute < NORMAL_HEART_RATE_MIN) {
           Serial.println("Action: Your heart rate is lower than normal. Take deep breaths and relax.");
         } else if (beatsPerMinute > NORMAL_HEART_RATE_MAX) {
           Serial.println("Action: Your heart rate is higher than normal. Try to relax and calm down.");
         }
-        // Implement additional actions as needed
       }
 
       // Read BMP180 temperature data
@@ -89,11 +88,9 @@ void loop() {
       if (temperature > HOT_TEMPERATURE_THRESHOLD) {
         Serial.println("Status: Temperature is too hot! Alert!");
         Serial.println("Action: Move to a cooler place and drink water.");
-        // Implement action for hot temperature
       } else if (temperature < COLD_TEMPERATURE_THRESHOLD) {
         Serial.println("Status: Temperature is too cold! Alert!");
         Serial.println("Action: Keep warm and avoid exposure to cold.");
-        // Implement action for cold temperature
       } else {
         Serial.println("Status: Temperature is normal.");
       }
@@ -113,8 +110,7 @@ void loop() {
     delay(5000); // 5 seconds delay
     measurementComplete = false; // Reset measurement flag
   } else {
-    delay(1000); // Adjust delay as needed for your application
+    delay(1000);
   }
 }
-
 
